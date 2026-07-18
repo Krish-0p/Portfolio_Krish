@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import Container from '../ui/Container';
+import DecryptedText from '../ui/DecryptedText';
 
 const navItems = [
   { label: 'Work', href: '#work' },
@@ -27,7 +28,13 @@ function NavLink({ label, href, delay }: { label: string; href: string; delay: n
         rel={isExternal ? 'noopener noreferrer' : undefined}
         className="font-mono text-mono-xs tracking-widest uppercase text-white/60 no-underline hover:text-white transition-colors duration-300 px-3 py-2 inline-block"
       >
-        {label}
+        <DecryptedText
+          text={label}
+          animateOn="hover"
+          useOriginalCharsOnly
+          speed={40}
+          maxIterations={10}
+        />
       </a>
       <motion.div
         animate={{ scaleX: hovered ? 1 : 0 }}

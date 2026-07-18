@@ -138,7 +138,7 @@ export default function SplitText({
 
   const style: React.CSSProperties = {
     textAlign,
-    overflow: 'hidden',
+    overflow: 'visible',
     display: 'inline-block',
     whiteSpace: nowrap ? 'nowrap' : 'normal',
     wordWrap: nowrap ? undefined : 'break-word',

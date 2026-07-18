@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Container from '../ui/Container';
+import Button from '../ui/Button';
 
 interface Project {
   id: number;
@@ -8,6 +9,7 @@ interface Project {
   description: string;
   meta: string;
   image?: string;
+  github?: string;
 }
 
 const projects: Project[] = [
@@ -17,6 +19,7 @@ const projects: Project[] = [
     description: 'Intelligent Telemetry & Anomaly Detection. Secure your infrastructure with our hybrid AI engine combining LSTM neural networks and Isolation Forests.',
     meta: 'AiOps / 2024',
     image: '/projects/logguard.png',
+    github: 'https://github.com/Krish-0p/LogGuard',
   },
   {
     id: 2,
@@ -24,6 +27,7 @@ const projects: Project[] = [
     description: 'AI Phishing Detector. Stop Social Engineering & Scams in real-time. Protect yourself with standard-setting AI designed to expose OTP demands and bank impersonations.',
     meta: 'Security / 2024',
     image: '/projects/baitbuster.png',
+    github: 'https://github.com/Krish-0p/cipherium',
   },
   {
     id: 3,
@@ -31,6 +35,7 @@ const projects: Project[] = [
     description: 'Start Your Dream Vacation Today. A comprehensive travel booking platform to discover the world\'s most amazing destinations and hotels.',
     meta: 'Platform / 2023',
     image: '/projects/travelwise.png',
+    github: 'https://github.com/Krish-0p/TravelWise-travel-website-with-chatbot-',
   },
 ];
 
@@ -89,6 +94,14 @@ function MobileProjectCard({ project, index }: { project: Project; index: number
       <p className="font-display text-xs leading-relaxed text-white/50">
         {project.description}
       </p>
+
+      {project.github && (
+        <div className="mt-1">
+          <Button variant="link" href={project.github} target="_blank" rel="noopener noreferrer">
+            GitHub ↗
+          </Button>
+        </div>
+      )}
     </motion.div>
   );
 }
@@ -216,6 +229,14 @@ function DesktopWorkPanel({ isInView }: { isInView: boolean }) {
               <p className={`font-display text-sm leading-relaxed transition-colors duration-500 ${isActive ? 'text-white/70' : 'text-white/30 group-hover:text-white/45'}`}>
                 {project.description}
               </p>
+
+              {project.github && (
+                <div className="mt-1" onClick={(e) => e.stopPropagation()}>
+                  <Button variant="link" href={project.github} target="_blank" rel="noopener noreferrer">
+                    GitHub ↗
+                  </Button>
+                </div>
+              )}
             </div>
           );
         })}
@@ -333,6 +354,26 @@ export default function WorkPanel() {
             ))}
           </div>
         )}
+
+        {/* Centered Footer Link: More projects on Github */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+          transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
+          className="flex justify-center mt-16 md:mt-24 w-full"
+        >
+          <p className="font-mono text-mono-xs tracking-widest uppercase text-white/30 flex items-center gap-1.5 select-none">
+            <span>More project on</span>
+            <a
+              href="https://github.com/Krish-0p"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent hover:text-white transition-colors duration-300 underline underline-offset-4 pointer-events-auto"
+            >
+              Github
+            </a>
+          </p>
+        </motion.div>
       </Container>
     </section>
   );

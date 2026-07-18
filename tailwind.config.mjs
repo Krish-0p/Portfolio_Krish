@@ -21,7 +21,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Space Grotesk"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Fjalla One"', '"Space Grotesk"', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'SF Mono', 'Cascadia Code', 'ui-monospace', 'monospace'],
       },
       fontSize: {

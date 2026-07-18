@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Container from '../ui/Container';
 import Button from '../ui/Button';
+import DecryptedText from '../ui/DecryptedText';
 
 const links = [
   { label: 'krishshejwal0p@gmail.com', href: 'mailto:krishshejwal0p@gmail.com' },
@@ -57,8 +58,14 @@ export default function Contact() {
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
           >
-            <Button variant="primary" href="mailto:krishshejwal0p@gmail.com">
-              Say Hello
+            <Button variant="primary" href="https://x.com/Krish_0p_" target="_blank" rel="noopener noreferrer">
+              <DecryptedText
+                text="Say Hello"
+                animateOn="hover"
+                useOriginalCharsOnly
+                speed={40}
+                maxIterations={10}
+              />
             </Button>
           </motion.div>
         </div>

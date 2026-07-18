@@ -15,11 +15,11 @@ const { title = 'Krish — Designer & Developer', description = 'Building interf
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Google Fonts: Space Grotesk + JetBrains Mono -->
+    <!-- Google Fonts: Space Grotesk + JetBrains Mono + Fjalla One -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600;700&family=Fjalla+One&display=swap"
       rel="stylesheet"
     />
 
@@ -75,14 +75,30 @@ const { title = 'Krish — Designer & Developer', description = 'Building interf
 
   /* Reset & base */
   html {
-    scroll-behavior: smooth;
     color-scheme: dark;
+  }
+
+  /* Lenis smooth scrolling styles */
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+  .lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis-stopped {
+    overflow: hidden;
+  }
+  .lenis-smooth iframe {
+    pointer-events: none;
   }
 
   body {
     background-color: var(--color-root);
     color: var(--text-primary);
-    font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    font-family: 'Fjalla One', 'Space Grotesk', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -135,3 +151,53 @@ const { title = 'Krish — Designer & Developer', description = 'Building interf
     color: var(--text-primary);
   }
 </style>
+
+<script>
+  import Lenis from 'lenis';
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  // Register GSAP ScrollTrigger
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Initialize Lenis smooth scroll
+  const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    wheelMultiplier: 1.0,
+    touchMultiplier: 1.5,
+  });
+
+  // Keep GSAP ScrollTrigger updated with Lenis scroll events
+  lenis.on('scroll', ScrollTrigger.update);
+
+  // Integrate Lenis RAF with GSAP ticker
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+
+  // Disable lag smoothing to prevent visual sync issues
+  gsap.ticker.lagSmoothing(0);
+
+  // Handle internal anchor links using Lenis for smooth transitions
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const anchor = target.closest('a');
+    
+    if (anchor) {
+      const href = anchor.getAttribute('href');
+      // Check if it's an anchor link on the same page
+      if (href && href.startsWith('#') && href !== '#') {
+        // Skip default behavior for accessibility skip links
+        if (anchor.classList.contains('skip-link')) return;
+
+        e.preventDefault();
+        const targetEl = document.querySelector(href);
+        if (targetEl) {
+          lenis.scrollTo(targetEl);
+        }
+      }
+    }
+  });
+</script>

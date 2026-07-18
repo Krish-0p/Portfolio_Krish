@@ -7,6 +7,8 @@ interface ButtonProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  target?: string;
+  rel?: string;
 }
 
 export default function Button({
@@ -15,10 +17,12 @@ export default function Button({
   children,
   className = '',
   onClick,
+  target,
+  rel,
 }: ButtonProps) {
   const [hovered, setHovered] = useState(false);
   const Component = href ? 'a' : 'button';
-  const elementProps = href ? { href, onClick } : { onClick };
+  const elementProps = href ? { href, onClick, target, rel } : { onClick };
 
   if (variant === 'primary') {
     return (

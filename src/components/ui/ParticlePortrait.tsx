@@ -29,6 +29,9 @@ interface Particle {
   vx: number; vy: number; // velocity
   color: string;          // rgb values, e.g. "232, 168, 56"
   brightness: number;     // 0 to 1 relative luminance
+  opacity: number;        // fade-in opacity during loading animation
+  delay: number;          // spawn delay in ms
+  started: boolean;       // whether the spawn animation has started for this particle
 }
 
 export default function ParticlePortrait() {
@@ -37,15 +40,24 @@ export default function ParticlePortrait() {
   const mouseRef = useRef({ x: -9999, y: -9999 });
   const rafRef = useRef<number>(0);
   const dprRef = useRef(1);
+  const startTimeRef = useRef<number>(0);
 
   // ── Build particles from a silhouette ──
-  const buildFromSilhouette = useCallback((cw: number, ch: number) => {
+  const buildFromSilhouette = useCallback((cw: number, ch: number, skipAnimation = false) => {
+    const isMobile = cw < 768;
     // Dynamically scale silhouette to fill the hero height
-    let sh = Math.min(ch * 0.85, 750);
+    let sh = isMobile ? Math.min(ch * 0.45, 280) : Math.min(ch * 0.85, 750);
     let sw = sh * 0.76;
-    if (sw > cw * 0.85) {
-      sw = cw * 0.85;
-      sh = sw / 0.76;
+    if (isMobile) {
+      if (sw > cw * 0.85) {
+        sw = cw * 0.85;
+        sh = sw / 0.76;
+      }
+    } else {
+      if (sw > cw * 0.85) {
+        sw = cw * 0.85;
+        sh = sw / 0.76;
+      }
     }
 
     const targetWidth = Math.round(sw);
@@ -66,11 +78,11 @@ export default function ParticlePortrait() {
     oc.textBaseline = 'middle';
     oc.fillText('K', targetWidth / 2, targetHeight / 2 + 10);
 
-    return samplePixels(off, oc, targetWidth, targetHeight, cw, ch);
+    return samplePixels(off, oc, targetWidth, targetHeight, cw, ch, skipAnimation);
   }, []);
 
   // ── Build particles from a photo ──
-  const buildFromPhoto = useCallback((cw: number, ch: number): Promise<Particle[]> => {
+  const buildFromPhoto = useCallback((cw: number, ch: number, skipAnimation = false): Promise<Particle[]> => {
     return new Promise((resolve) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
@@ -78,13 +90,21 @@ export default function ParticlePortrait() {
 
       img.onload = () => {
         const imgAspect = img.naturalWidth / img.naturalHeight || 0.76;
+        const isMobile = cw < 768;
         
         // Dynamically scale photo to fill the hero height
-        let sh = Math.min(ch * 0.85, 750);
+        let sh = isMobile ? Math.min(ch * 0.45, 280) : Math.min(ch * 0.85, 750);
         let sw = sh * imgAspect;
-        if (sw > cw * 0.85) {
-          sw = cw * 0.85;
-          sh = sw / imgAspect;
+        if (isMobile) {
+          if (sw > cw * 0.85) {
+            sw = cw * 0.85;
+            sh = sw / imgAspect;
+          }
+        } else {
+          if (sw > cw * 0.85) {
+            sw = cw * 0.85;
+            sh = sw / imgAspect;
+          }
         }
 
         const targetWidth = Math.round(sw);
@@ -95,12 +115,12 @@ export default function ParticlePortrait() {
         off.height = targetHeight;
         const oc = off.getContext('2d')!;
         oc.drawImage(img, 0, 0, targetWidth, targetHeight);
-        resolve(samplePixels(off, oc, targetWidth, targetHeight, cw, ch));
+        resolve(samplePixels(off, oc, targetWidth, targetHeight, cw, ch, skipAnimation));
       };
 
       img.onerror = () => {
         // Fallback to silhouette if photo fails to load
-        resolve(buildFromSilhouette(cw, ch));
+        resolve(buildFromSilhouette(cw, ch, skipAnimation));
       };
     });
   }, [buildFromSilhouette]);
@@ -110,14 +130,16 @@ export default function ParticlePortrait() {
     _canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
     sw: number, sh: number,
-    cw: number, ch: number
+    cw: number, ch: number,
+    skipAnimation = false
   ): Particle[] => {
     const pxd = ctx.getImageData(0, 0, sw, sh).data;
     const particles: Particle[] = [];
 
-    // Center the portrait on canvas
+    // Center the portrait on canvas (both mobile and desktop)
+    const isMobile = cw < 768;
     const offsetX = (cw - sw) / 2;
-    const offsetY = (ch - sh) / 2;
+    const offsetY = isMobile ? Math.max(200, (ch - sh) * 0.36) : (ch - sh) / 2;
 
     // Parse the DOT_COLOR theme color for photo blending
     const themeColor = DOT_COLOR.split(',').map(v => parseInt(v.trim(), 10));
@@ -167,8 +189,36 @@ export default function ParticlePortrait() {
             vx: 0, vy: 0,
             color,
             brightness: lum,
+            opacity: skipAnimation ? 1 : 0,
+            delay: 0,
+            started: skipAnimation,
           });
         }
+      }
+    }
+
+    // Post-process to assign delays and initial offset positions for loading animation
+    if (!skipAnimation && particles.length > 0) {
+      let minY = Infinity;
+      let maxY = -Infinity;
+      for (let j = 0; j < particles.length; j++) {
+        const p = particles[j];
+        if (p.oy < minY) minY = p.oy;
+        if (p.oy > maxY) maxY = p.oy;
+      }
+      const yRange = maxY - minY || 1;
+
+      for (let j = 0; j < particles.length; j++) {
+        const p = particles[j];
+        // Calculate normalized Y from bottom to top (bottom-up sweep animation)
+        const normalizedY = (maxY - p.oy) / yRange;
+
+        // Spread the delay over 1.0s, with minor random jitter for a organic transition
+        p.delay = normalizedY * 850 + Math.random() * 200;
+
+        // Offset position: start 30px below and slightly scattered horizontally
+        p.x = p.ox + (Math.random() - 0.5) * 12;
+        p.y = p.oy + 30 + Math.random() * 15;
       }
     }
 
@@ -185,6 +235,7 @@ export default function ParticlePortrait() {
     const dpr = dprRef.current;
     const cw = canvas.width / dpr;
     const ch = canvas.height / dpr;
+    const isMobile = cw < 768;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
@@ -193,23 +244,40 @@ export default function ParticlePortrait() {
     const mx = mouseRef.current.x;
     const my = mouseRef.current.y;
     const particles = particlesRef.current;
+    const elapsed = performance.now() - startTimeRef.current;
 
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
+
+      // Handle loading animation trigger
+      if (!p.started) {
+        if (elapsed >= p.delay) {
+          p.started = true;
+        } else {
+          continue; // Skip rendering/updating physics until started
+        }
+      }
+
+      // Smoothly fade in active particles
+      if (p.opacity < 1) {
+        p.opacity = Math.min(1, p.opacity + 0.05);
+      }
 
       // Spring: pull toward origin
       p.vx += (p.ox - p.x) * SPRING;
       p.vy += (p.oy - p.y) * SPRING;
 
-      // Repulsion from cursor
-      const dx = p.x - mx;
-      const dy = p.y - my;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+      // Repulsion from cursor (skip on mobile to prevent performance lag)
+      if (!isMobile) {
+        const dx = p.x - mx;
+        const dy = p.y - my;
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (dist < REPEL_RADIUS && dist > 0) {
-        const force = (REPEL_RADIUS - dist) / REPEL_RADIUS * REPEL_FORCE;
-        p.vx += (dx / dist) * force;
-        p.vy += (dy / dist) * force;
+        if (dist < REPEL_RADIUS && dist > 0) {
+          const force = (REPEL_RADIUS - dist) / REPEL_RADIUS * REPEL_FORCE;
+          p.vx += (dx / dist) * force;
+          p.vy += (dy / dist) * force;
+        }
       }
 
       // Friction
@@ -230,10 +298,13 @@ export default function ParticlePortrait() {
       // Dots closer to their origin are dimmer (resting opacity), displaced ones glow brighter
       const displacement = Math.sqrt((p.x - p.ox) ** 2 + (p.y - p.oy) ** 2);
       const glowAlpha = Math.min(baseAlpha + displacement * 0.008, 0.95);
+      
+      const alphaMultiplier = isMobile ? 0.65 : 1.0;
+      const finalAlpha = glowAlpha * p.opacity * alphaMultiplier;
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, DOT_SIZE, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${p.color}, ${glowAlpha.toFixed(2)})`;
+      ctx.fillStyle = `rgba(${p.color}, ${finalAlpha.toFixed(2)})`;
       ctx.fill();
     }
 
@@ -271,6 +342,7 @@ export default function ParticlePortrait() {
       } else {
         particlesRef.current = buildFromSilhouette(cw, ch);
       }
+      startTimeRef.current = performance.now();
       rafRef.current = requestAnimationFrame(animate);
     };
 
@@ -309,15 +381,18 @@ export default function ParticlePortrait() {
       const newCw = parent.getBoundingClientRect().width;
       const newCh = parent.getBoundingClientRect().height;
       if (USE_PHOTO) {
-        buildFromPhoto(newCw, newCh).then(p => { particlesRef.current = p; });
+        buildFromPhoto(newCw, newCh, true).then(p => { particlesRef.current = p; });
       } else {
-        particlesRef.current = buildFromSilhouette(newCw, newCh);
+        particlesRef.current = buildFromSilhouette(newCw, newCh, true);
       }
     };
 
-    window.addEventListener('mousemove', handleMouse);
-    window.addEventListener('touchmove', handleTouch, { passive: true });
-    window.addEventListener('touchend', handleTouchEnd);
+    const isMobileView = window.innerWidth < 768;
+    if (!isMobileView) {
+      window.addEventListener('mousemove', handleMouse);
+      window.addEventListener('touchmove', handleTouch, { passive: true });
+      window.addEventListener('touchend', handleTouchEnd);
+    }
     window.addEventListener('resize', handleResize);
 
     return () => {
