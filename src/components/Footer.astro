@@ -1,0 +1,94 @@
+---
+/**
+ * Footer — Full-width bar at the bottom.
+ *
+ * Layout: three-column flex:
+ *   Left (legal/copyright) | Center (credits) | Right (empty or branding)
+ * 1px top border. Structural grid lines visible behind.
+ */
+---
+<footer class="footer">
+  <!-- Background grid (decorative) -->
+  <div class="footer__grid" aria-hidden="true">
+    <div class="footer__grid-col"></div>
+    <div class="footer__grid-col"></div>
+    <div class="footer__grid-col"></div>
+  </div>
+
+  <div class="footer__inner">
+    <div class="footer__left">
+      <slot name="left" />
+    </div>
+    <div class="footer__center">
+      <slot name="center" />
+    </div>
+    <div class="footer__right">
+      <slot name="right" />
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    width: 100%;
+    position: relative;
+    border-top: var(--border-subtle);
+    padding: var(--space-24) var(--gutter);
+    overflow: hidden;
+  }
+
+  /* ── Background grid ── */
+  .footer__grid {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .footer__grid-col {
+    flex: 1;
+    border-right: var(--border-subtle);
+  }
+
+  .footer__grid-col:last-child {
+    border-right: none;
+  }
+
+  /* ── Content ── */
+  .footer__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .footer__left {
+    flex-shrink: 0;
+  }
+
+  .footer__center {
+    text-align: center;
+  }
+
+  .footer__right {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .footer__inner {
+      flex-direction: column;
+      gap: var(--space-12);
+      text-align: center;
+    }
+
+    .footer__right {
+      justify-content: center;
+    }
+  }
+</style>

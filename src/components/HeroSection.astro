@@ -1,0 +1,158 @@
+---
+/**
+ * HeroSection — Full-width cinematic frame.
+ *
+ * Layout zones (all absolute-positioned within the frame):
+ *   - Canvas background (slot: "canvas") — z-index 1
+ *   - Headline row: left text + divider + right text — z-index 2, top region
+ *   - Sub-text block: left-aligned, mid-height — z-index 2
+ *   - Secondary text: right-aligned, lower-right — z-index 2
+ *   - Bottom fade gradient — z-index 1
+ *
+ * Fixed height. Overflow hidden. No scroll.
+ */
+---
+<section class="hero">
+  <!-- Background canvas / generative slot -->
+  <div class="hero__canvas">
+    <slot name="canvas" />
+  </div>
+
+  <!-- Bottom fade gradient -->
+  <div class="hero__fade" aria-hidden="true"></div>
+
+  <!-- Headline row: two text blocks with a divider -->
+  <div class="hero__headline-row">
+    <div class="hero__headline-left">
+      <slot name="headline-left" />
+    </div>
+    <div class="hero__headline-divider"></div>
+    <div class="hero__headline-right">
+      <slot name="headline-right" />
+    </div>
+  </div>
+
+  <!-- Sub-text: left-aligned below headline -->
+  <div class="hero__subtext">
+    <slot name="subtext" />
+  </div>
+
+  <!-- Secondary text: right-aligned, lower portion -->
+  <div class="hero__secondary">
+    <slot name="secondary" />
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    width: 100%;
+    height: var(--hero-h);
+    min-height: 600px;
+    overflow: hidden;
+  }
+
+  /* ── Canvas background ── */
+  .hero__canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* ── Bottom fade ── */
+  .hero__fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 220px;
+    background: linear-gradient(to top, #0A0A0A 0%, transparent 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* ── Headline row ── */
+  .hero__headline-row {
+    position: absolute;
+    top: calc(var(--header-h) + var(--space-40));
+    left: var(--gutter);
+    right: var(--gutter);
+    display: flex;
+    align-items: center;
+    gap: var(--space-16);
+    z-index: 2;
+  }
+
+  .hero__headline-left {
+    flex-shrink: 0;
+  }
+
+  .hero__headline-divider {
+    flex: 1;
+    min-width: var(--space-24);
+    height: 1px;
+    background: rgba(255, 255, 255, 0.30);
+  }
+
+  .hero__headline-right {
+    flex-shrink: 0;
+  }
+
+  /* ── Sub-text (left, mid-height) ── */
+  .hero__subtext {
+    position: absolute;
+    top: calc(var(--header-h) + 180px);
+    left: var(--gutter);
+    max-width: 380px;
+    z-index: 2;
+  }
+
+  /* ── Secondary text (right, lower) ── */
+  .hero__secondary {
+    position: absolute;
+    bottom: 220px;
+    right: var(--gutter);
+    max-width: 440px;
+    text-align: right;
+    z-index: 2;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .hero__headline-row {
+      top: calc(var(--header-h) + var(--space-24));
+    }
+
+    .hero__subtext {
+      top: calc(var(--header-h) + 140px);
+      max-width: 300px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      min-height: 500px;
+    }
+
+    .hero__headline-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-12);
+    }
+
+    .hero__headline-divider {
+      width: 60px;
+      min-width: unset;
+      flex: unset;
+    }
+
+    .hero__secondary {
+      right: var(--gutter);
+      left: var(--gutter);
+      text-align: left;
+      bottom: 180px;
+      max-width: none;
+    }
+  }
+</style>

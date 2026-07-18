@@ -1,0 +1,168 @@
+---
+/**
+ * ContactSection — Final conversion zone.
+ *
+ * Layout:
+ *   - Social links row: right-aligned stack of external links
+ *   - CTA block: centered headline + button with corner-bracket frame
+ *   - Grid pattern background
+ *
+ * This section uses a 3-column grid:
+ *   Left (empty) | Center (CTA) | Right (social links)
+ */
+---
+<section id="contact" class="contact">
+  <!-- Structural grid lines (decorative) -->
+  <div class="contact__grid" aria-hidden="true">
+    <div class="contact__grid-col"></div>
+    <div class="contact__grid-col"></div>
+    <div class="contact__grid-col"></div>
+  </div>
+
+  <!-- Social links (right column) -->
+  <div class="contact__social">
+    <slot name="social" />
+  </div>
+
+  <!-- CTA block (centered) -->
+  <div class="contact__cta">
+    <div class="contact__cta-headline">
+      <slot name="headline" />
+    </div>
+    <div class="contact__cta-button">
+      <!-- Corner bracket frame around the button -->
+      <span class="contact__bracket contact__bracket--tl" aria-hidden="true"></span>
+      <span class="contact__bracket contact__bracket--tr" aria-hidden="true"></span>
+      <span class="contact__bracket contact__bracket--bl" aria-hidden="true"></span>
+      <span class="contact__bracket contact__bracket--br" aria-hidden="true"></span>
+      <slot name="cta" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    width: 100%;
+    min-height: 500px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-56) var(--gutter);
+    border-top: var(--border-subtle);
+    overflow: hidden;
+  }
+
+  /* ── Decorative grid columns ── */
+  .contact__grid {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .contact__grid-col {
+    flex: 1;
+    border-right: var(--border-subtle);
+  }
+
+  .contact__grid-col:last-child {
+    border-right: none;
+  }
+
+  /* ── Social links ── */
+  .contact__social {
+    position: absolute;
+    top: var(--space-40);
+    right: var(--gutter);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    z-index: 1;
+  }
+
+  /* ── CTA block ── */
+  .contact__cta {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-24);
+  }
+
+  .contact__cta-headline {
+    text-align: center;
+    max-width: 600px;
+  }
+
+  .contact__cta-button {
+    position: relative;
+    display: inline-block;
+    padding: var(--space-12) var(--space-24);
+  }
+
+  /* ── Corner brackets ── */
+  .contact__bracket {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .contact__bracket--tl {
+    top: 0;
+    left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.30);
+    border-left: 1px solid rgba(255, 255, 255, 0.30);
+  }
+
+  .contact__bracket--tr {
+    top: 0;
+    right: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.30);
+    border-right: 1px solid rgba(255, 255, 255, 0.30);
+  }
+
+  .contact__bracket--bl {
+    bottom: 0;
+    left: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.30);
+    border-left: 1px solid rgba(255, 255, 255, 0.30);
+  }
+
+  .contact__bracket--br {
+    bottom: 0;
+    right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.30);
+    border-right: 1px solid rgba(255, 255, 255, 0.30);
+  }
+
+  /* Hover glow on bracket wrapper */
+  .contact__cta-button:hover .contact__bracket {
+    border-color: rgba(255, 255, 255, 0.60);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.15);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .contact {
+      min-height: 400px;
+      padding-top: 120px;
+    }
+
+    .contact__social {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--space-16);
+      margin-bottom: var(--space-40);
+    }
+
+    .contact__grid-col {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,203 @@
+---
+/**
+ * WorkSection — Split-pane layout.
+ *
+ * Layout:
+ *   Left: fixed-width sidebar (388px) with three vertical zones:
+ *     - Top: section label
+ *     - Middle: project index
+ *     - Bottom: contact/links
+ *   Right: fluid scrollable panel with blur-masked edges.
+ *   Fixed section height. 1px border between panes.
+ *
+ * On mobile: sidebar stacks above, scroll panel fills width.
+ */
+---
+<section id="work" class="work">
+  <!-- Sidebar -->
+  <aside class="work__sidebar">
+    <div class="work__sidebar-top">
+      <slot name="sidebar-label" />
+    </div>
+    <div class="work__sidebar-mid">
+      <slot name="sidebar-index" />
+    </div>
+    <div class="work__sidebar-bottom">
+      <slot name="sidebar-contact" />
+    </div>
+  </aside>
+
+  <!-- Scrollable content panel -->
+  <div class="work__panel">
+    <!-- Top blur mask -->
+    <div class="work__panel-mask work__panel-mask--top" aria-hidden="true"></div>
+
+    <!-- Scrollable content -->
+    <div class="work__panel-scroll no-scrollbar">
+      <div class="work__panel-inner">
+        <slot name="projects" />
+      </div>
+    </div>
+
+    <!-- Bottom blur mask -->
+    <div class="work__panel-mask work__panel-mask--bottom" aria-hidden="true"></div>
+  </div>
+</section>
+
+<style>
+  .work {
+    width: 100%;
+    height: var(--work-h);
+    min-height: 700px;
+    display: flex;
+    flex-direction: row;
+    border-top: var(--border-subtle);
+    overflow: hidden;
+  }
+
+  /* ── Sidebar ── */
+  .work__sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    height: 100%;
+    flex-shrink: 0;
+    position: relative;
+    border-right: var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .work__sidebar-top {
+    padding: var(--space-40) var(--gutter) 0;
+  }
+
+  .work__sidebar-mid {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: var(--gutter);
+    right: var(--space-16);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+  }
+
+  .work__sidebar-bottom {
+    margin-top: auto;
+    padding: 0 var(--gutter) var(--space-40);
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  /* ── Scrollable panel ── */
+  .work__panel {
+    flex: 1;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .work__panel-scroll {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .work__panel-inner {
+    width: 100%;
+    max-width: 1124px;
+    margin: 0 auto;
+    padding: var(--space-40);
+    padding-bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-46);
+  }
+
+  /* ── Blur masks ── */
+  .work__panel-mask {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 72px;
+    z-index: 2;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    pointer-events: none;
+  }
+
+  .work__panel-mask--top {
+    top: 0;
+    mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  }
+
+  .work__panel-mask--bottom {
+    bottom: 0;
+    mask-image: linear-gradient(to top, black 30%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, black 30%, transparent 100%);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .work__sidebar {
+      width: 280px;
+      min-width: 280px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .work {
+      flex-direction: column;
+      height: auto;
+      min-height: auto;
+    }
+
+    .work__sidebar {
+      width: 100%;
+      min-width: unset;
+      height: auto;
+      border-right: none;
+      border-bottom: var(--border-subtle);
+      padding: var(--space-24) var(--gutter);
+    }
+
+    .work__sidebar-top {
+      padding: 0 0 var(--space-16);
+    }
+
+    .work__sidebar-mid {
+      position: static;
+      transform: none;
+      left: unset;
+      right: unset;
+      padding-bottom: var(--space-20);
+    }
+
+    .work__sidebar-bottom {
+      padding: var(--space-16) 0 0;
+      margin-top: 0;
+    }
+
+    .work__panel {
+      height: auto;
+      min-height: 500px;
+    }
+
+    .work__panel-scroll {
+      height: auto;
+      overflow-y: visible;
+    }
+
+    .work__panel-mask {
+      display: none;
+    }
+
+    .work__panel-inner {
+      padding: var(--space-24) var(--gutter);
+      padding-bottom: var(--space-40);
+    }
+  }
+</style>

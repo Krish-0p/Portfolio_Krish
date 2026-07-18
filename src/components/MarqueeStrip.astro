@@ -1,0 +1,166 @@
+---
+/**
+ * MarqueeStrip — Horizontal auto-scrolling image track.
+ *
+ * Layout:
+ *   - Top: Section heading centered in a bordered box (155px height)
+ *   - Bottom: Full-width horizontal marquee track filling remaining height
+ *
+ * The marquee duplicates its children to create a seamless loop.
+ * Fixed section height. Overflow hidden.
+ */
+---
+<section class="marquee-section">
+  <!-- Section heading in bordered box -->
+  <div class="marquee-section__heading">
+    <div class="marquee-section__heading-box">
+      <!-- Corner brackets -->
+      <span class="marquee-section__corner marquee-section__corner--tl" aria-hidden="true"></span>
+      <span class="marquee-section__corner marquee-section__corner--tr" aria-hidden="true"></span>
+      <span class="marquee-section__corner marquee-section__corner--bl" aria-hidden="true"></span>
+      <span class="marquee-section__corner marquee-section__corner--br" aria-hidden="true"></span>
+
+      <slot name="heading" />
+    </div>
+  </div>
+
+  <!-- Marquee track -->
+  <div class="marquee-section__track-wrapper">
+    <div class="marquee-section__track">
+      <slot name="items" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .marquee-section {
+    width: 100%;
+    height: var(--marquee-h);
+    min-height: 600px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── Heading bar ── */
+  .marquee-section__heading {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 155px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: var(--border-medium);
+  }
+
+  .marquee-section__heading-box {
+    position: relative;
+    width: clamp(320px, 50%, 738px);
+    height: 100%;
+    border-left: var(--border-medium);
+    border-right: var(--border-medium);
+    border-bottom: var(--border-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--space-40);
+  }
+
+  /* ── Corner brackets on heading box ── */
+  .marquee-section__corner {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+  }
+
+  .marquee-section__corner--tl {
+    top: 51px;
+    left: calc(50% - 158px);
+    border-top: 1.5px solid rgba(255, 255, 255, 0.30);
+    border-left: 1.5px solid rgba(255, 255, 255, 0.30);
+  }
+
+  .marquee-section__corner--tr {
+    top: 51px;
+    right: calc(50% - 158px);
+    border-top: 1.5px solid rgba(255, 255, 255, 0.30);
+    border-right: 1.5px solid rgba(255, 255, 255, 0.30);
+  }
+
+  .marquee-section__corner--bl {
+    bottom: calc(155px - 106px - 9px);
+    left: calc(50% - 158px);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.30);
+    border-left: 1.5px solid rgba(255, 255, 255, 0.30);
+  }
+
+  .marquee-section__corner--br {
+    bottom: calc(155px - 106px - 9px);
+    right: calc(50% - 158px);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.30);
+    border-right: 1.5px solid rgba(255, 255, 255, 0.30);
+  }
+
+  /* ── Marquee track ── */
+  .marquee-section__track-wrapper {
+    position: absolute;
+    top: 155px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .marquee-section__track {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    width: max-content;
+    animation: marquee-scroll 40s linear infinite;
+  }
+
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Pause on hover for accessibility */
+  .marquee-section__track:hover {
+    animation-play-state: paused;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .marquee-section {
+      min-height: 400px;
+    }
+
+    .marquee-section__heading {
+      height: 100px;
+    }
+
+    .marquee-section__heading-box {
+      width: 80%;
+    }
+
+    .marquee-section__track-wrapper {
+      top: 100px;
+    }
+
+    .marquee-section__corner {
+      display: none;
+    }
+  }
+
+  /* ── Reduced motion ── */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-section__track {
+      animation: none;
+    }
+  }
+</style>

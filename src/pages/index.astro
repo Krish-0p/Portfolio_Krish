@@ -1,11 +1,33 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Header from '../components/layout/Header';
+import Hero from '../components/sections/Hero';
+import InfoBar from '../components/sections/InfoBar';
+import WorkPanel from '../components/sections/WorkPanel';
+import PhotoMarquee from '../components/sections/PhotoMarquee';
+import Contact from '../components/sections/Contact';
+import Footer from '../components/layout/Footer';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Krish — Designer & Developer" description="Building interfaces that bridge ambition and execution.">
+  <!-- Sticky Navigation -->
+  <Header client:load />
+
+  <!-- Hook: Who is Krish? -->
+  <Hero client:load />
+
+  <!-- Context: Location, Status, Year -->
+  <InfoBar client:visible />
+
+  <!-- Proof: Selected Work -->
+  <WorkPanel client:visible />
+
+  <!-- Personality Reset: Philosophy Ticker -->
+  <PhotoMarquee client:visible />
+
+  <!-- Conversion: Get in Touch -->
+  <Contact client:visible />
+
+  <!-- Structural Footer -->
+  <Footer client:visible />
 </Layout>
