@@ -55,7 +55,7 @@ function MobileProjectCard({ project, index }: { project: Project; index: number
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      className="flex flex-col gap-3"
+      className="flex flex-col gap-3.5"
     >
       {/* Image */}
       <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-white/[0.06]">
@@ -86,12 +86,12 @@ function MobileProjectCard({ project, index }: { project: Project; index: number
       </div>
 
       {/* Title */}
-      <h3 className="font-display text-lg font-bold uppercase tracking-wider text-white">
+      <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-wider text-white">
         {project.title}
       </h3>
 
       {/* Description */}
-      <p className="font-display text-xs leading-relaxed text-white/50">
+      <p className="font-display text-sm leading-relaxed text-white/50">
         {project.description}
       </p>
 
@@ -324,7 +324,7 @@ export default function WorkPanel() {
     <section
       ref={sectionRef}
       id="work"
-      className="w-full py-12 md:py-20 lg:py-28"
+      className="w-full py-16 sm:py-20 md:py-20 lg:py-28"
       style={{ background: 'var(--color-root)' }}
     >
       <Container fluid>
@@ -348,7 +348,7 @@ export default function WorkPanel() {
           <DesktopWorkPanel isInView={isInView} />
         ) : (
           /* Mobile: Simple stacked cards, no infinite scroll */
-          <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-12 sm:gap-14">
             {projects.map((project, i) => (
               <MobileProjectCard key={project.id} project={project} index={i} />
             ))}

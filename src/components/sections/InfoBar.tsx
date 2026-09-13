@@ -42,89 +42,82 @@ export default function InfoBar() {
     fetchWeather();
   }, []);
 
+  const items = [
+    {
+      index: '01',
+      label: 'BASED IN MUMBAI,',
+      value: loading ? 'FETCHING WEATHER...' : `${weather?.desc}, ${weather?.temp}°C`,
+      live: true,
+    },
+    { index: '02', label: 'PRODUCT DESIGNER,', value: 'Fullstack', live: false },
+    { index: '03', label: 'AVAILABLE FOR,', value: 'PROJECTS', live: true },
+  ];
+
   return (
     <section
       ref={ref}
-      className="w-full border-t border-b overflow-hidden"
-      style={{
-        borderColor: 'var(--border-subtle)',
-        background: 'var(--color-root)',
-        backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
-        backgroundSize: '16px 16px',
-      }}
+      className="relative w-full border-t border-b overflow-hidden"
+      style={{ borderColor: 'var(--border-subtle)', background: 'var(--color-root)' }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[rgba(255,255,255,0.06)]">
-        {/* Column 1: Location & Live Weather */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col items-center justify-center text-center py-16 px-6 gap-5 hover:bg-white/[0.01] transition-colors duration-300 group cursor-default"
-        >
-          {/* Glowing Map Pin Icon */}
-          <div className="relative w-9 h-9 flex items-center justify-center rounded-full bg-red-500/10 border border-red-500/20 group-hover:border-red-500/40 group-hover:bg-red-500/15 transition-all duration-300">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)] animate-pulse" />
-          </div>
+      {/* Line grid, same language as the hero */}
+      <div aria-hidden="true" className="absolute inset-0 opacity-[0.02] z-0 pointer-events-none">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="infobar-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#infobar-grid)" />
+        </svg>
+      </div>
 
-          <div className="flex flex-col gap-1.5">
-            <span className="font-mono text-mono-xs tracking-widest text-white/50 group-hover:text-white/80 transition-colors duration-300">
-              BASED IN MUMBAI,
-            </span>
-            <span className="font-mono text-mono-xs tracking-widest text-red-400 font-medium">
-              {loading ? 'FETCHING WEATHER...' : `${weather?.desc}, ${weather?.temp}°C`}
-            </span>
-          </div>
-        </motion.div>
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[rgba(255,255,255,0.06)]">
+        {items.map((item, i) => (
+          <motion.div
+            key={item.index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.7, delay: 0.1 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="group relative flex flex-col justify-between gap-6 sm:gap-8 md:gap-14 px-6 md:px-10 lg:px-12 py-8 sm:py-10 md:py-16 cursor-default"
+          >
+            {/* Accent edge that draws in on hover */}
+            <span
+              aria-hidden="true"
+              className="absolute left-0 top-0 h-full w-px bg-accent origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-out"
+            />
 
-        {/* Column 2: Role */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col items-center justify-center text-center py-16 px-6 gap-5 hover:bg-white/[0.01] transition-colors duration-300 group cursor-default"
-        >
-          {/* Glowing 3x3 Dot Grid Icon */}
-          <div className="relative w-9 h-9 flex items-center justify-center rounded-full bg-accent/10 border border-accent/20 group-hover:border-accent/40 group-hover:bg-accent/15 transition-all duration-300">
-            <div className="grid grid-cols-3 gap-0.5">
-              {[...Array(9)].map((_, i) => (
-                <span key={i} className="w-1.5 h-1.5 rounded-full bg-accent/80 group-hover:bg-accent transition-colors duration-300" />
-              ))}
+            {/* Top rail: index — rule — status */}
+            <div className="flex items-center gap-4">
+              <span className="font-mono text-[10px] tracking-[0.22em] text-accent/60 group-hover:text-accent transition-colors duration-300 tabular-nums">
+                {item.index}
+              </span>
+              <span className="h-px flex-1 bg-white/[0.06] group-hover:bg-white/[0.12] transition-colors duration-300" />
+              <span
+                aria-hidden="true"
+                className={`w-1.5 h-1.5 rounded-full bg-accent ${
+                  item.live ? 'animate-pulse shadow-glow-sm' : 'opacity-25'
+                }`}
+              />
             </div>
-          </div>
 
-          <div className="flex flex-col gap-1.5">
-            <span className="font-mono text-mono-xs tracking-widest text-white/50 group-hover:text-white/80 transition-colors duration-300">
-              PRODUCT DESIGNER,
-            </span>
-            <span className="font-mono text-mono-xs tracking-widest text-accent font-medium">
-              Fullstack
-            </span>
-          </div>
-        </motion.div>
+            {/* Label + value */}
+            <div className="flex flex-col gap-2.5 sm:gap-3">
+              <span className="font-mono text-mono-xs tracking-widest uppercase text-white/30 group-hover:text-white/50 transition-colors duration-300">
+                {item.label}
+              </span>
 
-        {/* Column 3: Availability */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col items-center justify-center text-center py-16 px-6 gap-5 hover:bg-white/[0.01] transition-colors duration-300 group cursor-default"
-        >
-          {/* Glowing Rotated Square / Diamond Icon */}
-          <div className="relative w-9 h-9 flex items-center justify-center rounded-full bg-secondary/10 border border-secondary/20 group-hover:border-secondary/40 group-hover:bg-secondary/15 transition-all duration-300">
-            <div className="w-3.5 h-3.5 border-2 border-secondary/80 rotate-45 flex items-center justify-center group-hover:border-secondary transition-colors duration-300">
-              <span className="w-1.5 h-1.5 bg-secondary rounded-full" />
+              <div className="flex flex-col gap-3">
+                <span className="font-display text-[1.375rem] sm:text-2xl lg:text-3xl leading-[1.05] tracking-tight text-white/90 group-hover:text-white transition-colors duration-300 tabular-nums">
+                  {item.value}
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="h-px w-10 bg-accent/70 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out"
+                />
+              </div>
             </div>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <span className="font-mono text-mono-xs tracking-widest text-white/50 group-hover:text-white/80 transition-colors duration-300">
-              AVAILABLE FOR,
-            </span>
-            <span className="font-mono text-mono-xs tracking-widest text-secondary font-medium">
-              PROJECTS
-            </span>
-          </div>
-        </motion.div>
+          </motion.div>
+        ))}
       </div>
     </section>
   );

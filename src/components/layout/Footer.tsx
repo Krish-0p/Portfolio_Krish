@@ -12,7 +12,7 @@ export default function Footer() {
       initial={{ opacity: 0, y: 10 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full border-t py-8 mt-auto relative"
+      className="w-full border-t py-7 sm:py-8 mt-auto relative"
       style={{ borderColor: 'var(--border-subtle)', background: 'var(--color-root)' }}
     >
       {/* Background Watermark Logo (Large, cropped K) in a crop-bounded wrapper */}
@@ -31,7 +31,7 @@ export default function Footer() {
         />
       </div>
 
-      <Container fluid className="relative z-10 flex flex-row items-center justify-between">
+      <Container fluid className="relative z-10 flex flex-row items-center justify-between gap-4 flex-wrap">
         <motion.span
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}

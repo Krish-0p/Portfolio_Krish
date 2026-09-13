@@ -7,11 +7,14 @@ dist/
 # dependencies
 node_modules/
 
+# foreign lockfiles — this project uses bun.lock only
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
 # logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
+*-debug.log*
+*-error.log*
 
 # environment variables
 .env

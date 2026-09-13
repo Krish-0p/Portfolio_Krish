@@ -139,7 +139,7 @@ export default function ParticlePortrait() {
     // Center the portrait on canvas (both mobile and desktop)
     const isMobile = cw < 768;
     const offsetX = (cw - sw) / 2;
-    const offsetY = isMobile ? Math.max(200, (ch - sh) * 0.36) : (ch - sh) / 2;
+    const offsetY = isMobile ? Math.max(170, (ch - sh) * 0.32) : (ch - sh) / 2;
 
     // Parse the DOT_COLOR theme color for photo blending
     const themeColor = DOT_COLOR.split(',').map(v => parseInt(v.trim(), 10));
@@ -376,15 +376,28 @@ export default function ParticlePortrait() {
       mouseRef.current = { x: -9999, y: -9999 };
     };
 
+    // Mobile browsers fire `resize` continuously while the URL bar hides/shows during
+    // scroll. Those events only change the height, so rebuilding the whole particle field
+    // on each one is what makes mobile scrolling stutter. Only rebuild on a real width
+    // change, and debounce it.
+    let lastWidth = parent.getBoundingClientRect().width;
+    let rebuildTimer: ReturnType<typeof setTimeout> | null = null;
+
     const handleResize = () => {
       resize();
       const newCw = parent.getBoundingClientRect().width;
-      const newCh = parent.getBoundingClientRect().height;
-      if (USE_PHOTO) {
-        buildFromPhoto(newCw, newCh, true).then(p => { particlesRef.current = p; });
-      } else {
-        particlesRef.current = buildFromSilhouette(newCw, newCh, true);
-      }
+      if (Math.abs(newCw - lastWidth) < 1) return;
+      lastWidth = newCw;
+
+      if (rebuildTimer) clearTimeout(rebuildTimer);
+      rebuildTimer = setTimeout(() => {
+        const rect = parent.getBoundingClientRect();
+        if (USE_PHOTO) {
+          buildFromPhoto(rect.width, rect.height, true).then(p => { particlesRef.current = p; });
+        } else {
+          particlesRef.current = buildFromSilhouette(rect.width, rect.height, true);
+        }
+      }, 150);
     };
 
     const isMobileView = window.innerWidth < 768;
@@ -396,6 +409,7 @@ export default function ParticlePortrait() {
     window.addEventListener('resize', handleResize);
 
     return () => {
+      if (rebuildTimer) clearTimeout(rebuildTimer);
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener('mousemove', handleMouse);
       window.removeEventListener('touchmove', handleTouch);

@@ -20,7 +20,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full overflow-hidden bg-root py-20 md:py-32 flex items-center" style={{ minHeight: 'var(--hero-min-h)' }}>
+    <section className="relative w-full overflow-hidden bg-root py-16 sm:py-20 md:py-32 flex items-center" style={{ minHeight: 'var(--hero-min-h)' }}>
       {/* Ambient gradient background matching our color tokens */}
       <div
         aria-hidden="true"
@@ -50,11 +50,11 @@ export default function Hero() {
 
       <Container fluid className="relative z-30 w-full">
         {/* Main Content Animation Wrapper */}
-        <motion.div style={{ y: textY, opacity }} className="flex flex-col justify-between w-full gap-16 md:gap-24">
+        <motion.div style={{ y: textY, opacity }} className="flex flex-col justify-between w-full gap-10 sm:gap-16 md:gap-24">
 
           {/* Top Row: Hey There ───────────── Cycling Text */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 w-full -translate-y-[10px]">
-            <h1 className="font-display text-4xl md:text-6xl font-light text-white whitespace-nowrap tracking-tight">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-6xl font-light text-white whitespace-nowrap tracking-tight">
               Hey There
             </h1>
 
@@ -67,7 +67,7 @@ export default function Hero() {
             />
 
             {/* Cycling Text with glow effect (left-aligned with fixed desktop width to prevent transition shifting) */}
-            <div className="h-[90px] flex items-center justify-start w-full md:w-[620px] shrink-0">
+            <div className="h-[60px] sm:h-[80px] md:h-[90px] flex items-center justify-start w-full md:w-[620px] shrink-0">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={index}
@@ -75,7 +75,7 @@ export default function Hero() {
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -15, filter: 'blur(4px)' }}
                   transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  className="font-display text-3xl sm:text-4xl md:text-6xl font-light text-white text-left whitespace-nowrap tracking-tight"
+                  className="font-display text-2xl sm:text-4xl md:text-6xl font-light text-white text-left whitespace-nowrap tracking-tight"
                 >
                   <SplitText
                     text={cycleTexts[index]}
@@ -94,7 +94,7 @@ export default function Hero() {
           </div>
 
           {/* Bottom Row: Description columns matching the positioning */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full mt-48 md:mt-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 w-full mt-40 sm:mt-44 md:mt-0">
             {/* Left description (aligned under "Hey There") */}
             <div className="max-w-[340px]">
               <p className="font-mono text-xs text-white/30 tracking-widest uppercase mb-3"></p>

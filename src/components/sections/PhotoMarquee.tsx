@@ -56,10 +56,10 @@ function TickerRow({ items, direction }: { items: string[]; direction: 'left' | 
         {doubled.map((text, i) => (
           <span
             key={`${direction}-${i}`}
-            className="inline-flex items-center mx-8 font-mono text-mono-label tracking-widest uppercase"
+            className="inline-flex items-center mx-5 sm:mx-8 font-mono text-mono-label tracking-widest uppercase"
             style={{ color: 'var(--text-ghost)' }}
           >
-            <span className="text-accent/30 mr-6">/</span>
+            <span className="text-accent/30 mr-4 sm:mr-6">/</span>
             {text}
           </span>
         ))}
@@ -71,13 +71,13 @@ function TickerRow({ items, direction }: { items: string[]; direction: 'left' | 
 export default function PhotoMarquee() {
   return (
     <section
-      className="w-full overflow-hidden border-t border-b py-8"
+      className="w-full overflow-hidden border-t border-b py-7 sm:py-8"
       style={{
         borderColor: 'var(--border-subtle)',
         background: 'var(--color-root)',
       }}
     >
-      <div className="h-full flex flex-col justify-center gap-8">
+      <div className="h-full flex flex-col justify-center gap-7 sm:gap-8">
         {/* Row 1: Scrolling Text */}
         <TickerRow items={row1} direction="left" />
         

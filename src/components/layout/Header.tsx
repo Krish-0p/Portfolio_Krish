@@ -26,7 +26,7 @@ function NavLink({ label, href, delay }: { label: string; href: string; delay: n
         href={href}
         target={isExternal ? '_blank' : undefined}
         rel={isExternal ? 'noopener noreferrer' : undefined}
-        className="font-mono text-mono-xs tracking-widest uppercase text-white/60 no-underline hover:text-white transition-colors duration-300 px-3 py-2 inline-block"
+        className="font-mono text-mono-xs tracking-widest uppercase text-white/60 no-underline hover:text-white transition-colors duration-300 px-2 py-3 md:px-3 md:py-2 inline-block"
       >
         <DecryptedText
           text={label}
@@ -39,7 +39,7 @@ function NavLink({ label, href, delay }: { label: string; href: string; delay: n
       <motion.div
         animate={{ scaleX: hovered ? 1 : 0 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute bottom-0 left-3 right-3 h-[1px] bg-accent origin-left"
+        className="absolute bottom-1.5 md:bottom-0 left-2 right-2 md:left-3 md:right-3 h-[1px] bg-accent origin-left"
       />
     </motion.div>
   );
@@ -67,7 +67,7 @@ export default function Header() {
         borderColor: 'var(--border-subtle)',
       }}
     >
-      <Container fluid className="h-full flex items-center gap-6">
+      <Container fluid className="h-full flex items-center gap-3 sm:gap-6">
         {/* Logo monogram */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -85,7 +85,7 @@ export default function Header() {
         </motion.div>
 
         {/* Scroll progress line */}
-        <div className="flex-1 h-[1px] relative overflow-hidden" style={{ background: 'var(--border-subtle)' }}>
+        <div className="hidden sm:block flex-1 h-[1px] relative overflow-hidden" style={{ background: 'var(--border-subtle)' }}>
           <motion.div
             style={{ width: progressWidth }}
             className="absolute top-0 left-0 h-full bg-gradient-to-r from-accent to-accent-soft rounded-full"
@@ -99,12 +99,20 @@ export default function Header() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-0.5 sm:gap-1 ml-auto sm:ml-0">
           {navItems.map((item, i) => (
             <NavLink key={item.href} label={item.label} href={item.href} delay={0.4 + i * 0.08} />
           ))}
         </nav>
       </Container>
+
+      {/* Mobile: same scroll progress, relocated to the header edge where it has room */}
+      <div className="sm:hidden absolute bottom-0 left-0 right-0 h-[2px] overflow-hidden">
+        <motion.div
+          style={{ width: progressWidth }}
+          className="h-full bg-gradient-to-r from-accent to-accent-soft"
+        />
+      </div>
     </motion.header>
   );
 }

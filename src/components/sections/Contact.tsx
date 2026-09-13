@@ -18,7 +18,7 @@ export default function Contact() {
     <section
       ref={ref}
       id="contact"
-      className="relative w-full py-24 md:py-32 overflow-hidden"
+      className="relative w-full py-16 sm:py-24 md:py-32 overflow-hidden"
       style={{ background: 'var(--color-root)' }}
     >
       {/* Subtle background grid */}
@@ -36,7 +36,7 @@ export default function Contact() {
       </div>
 
       <Container fluid className="relative z-10">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-12">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 sm:gap-12">
           {/* Left: Headline */}
           <div className="max-w-lg">
             <motion.div
@@ -75,7 +75,7 @@ export default function Contact() {
           initial={{ opacity: 0, y: 12 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
           transition={{ duration: 0.5, delay: 0.3, ease: 'easeOut' }}
-          className="flex items-center gap-5 mt-12 flex-wrap"
+          className="flex items-center gap-x-4 gap-y-3 mt-10 sm:mt-12 flex-wrap"
         >
           {links.map((link, i) => (
             <React.Fragment key={link.label}>
@@ -84,7 +84,7 @@ export default function Contact() {
                 href={link.href}
                 target={link.href.startsWith('mailto') ? undefined : '_blank'}
                 rel={link.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
-                className="font-mono text-mono-xs tracking-widest uppercase text-white/40 no-underline hover:text-accent transition-colors duration-300"
+                className="font-mono text-mono-xs tracking-widest uppercase text-white/40 no-underline hover:text-accent transition-colors duration-300 py-1 break-all sm:break-normal"
               >
                 {link.label}
               </a>
