@@ -1,4 +1,5 @@
 ---
+import Analytics from '@vercel/analytics/astro';
 import '../styles/global.css';
 
 interface Props {
@@ -32,6 +33,7 @@ const { title = 'Krish — Designer & Developer', description = 'Building interf
     <main id="main-content" style="padding-top: var(--header-h);">
       <slot />
     </main>
+    <Analytics />
   </body>
 </html>
 
