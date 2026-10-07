@@ -28,7 +28,8 @@ const { title = 'Krish — Designer & Developer', description = 'Building interf
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
-    <main id="main-content">
+    <slot name="header" />
+    <main id="main-content" style="padding-top: var(--header-h);">
       <slot />
     </main>
   </body>
@@ -84,15 +85,34 @@ const { title = 'Krish — Designer & Developer', description = 'Building interf
   /* Reset & base */
   html {
     color-scheme: dark;
-    /* Stop iOS Safari inflating text on orientation change */
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-  }
-
-  /* No sideways scroll on narrow screens */
-  html, body {
+    /* Custom scrollbar — Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) var(--color-root);
     overflow-x: hidden;
     max-width: 100%;
+  }
+
+  body {
+    overflow: visible;
+    max-width: 100%;
+  }
+
+  /* ── Custom Scrollbar — Webkit (Chrome, Edge, Safari) ── */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-accent);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent-soft);
   }
 
   /* Lenis smooth scrolling styles */
