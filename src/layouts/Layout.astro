@@ -28,7 +28,7 @@ const { title = 'Krish — Designer & Developer', description = 'Building interf
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
-    <main id="main-content">
+    <main id="main-content" style="padding-top: var(--header-h);">
       <slot />
     </main>
   </body>
@@ -164,6 +164,31 @@ const { title = 'Krish — Designer & Developer', description = 'Building interf
   }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+
+  /* ── Custom Scrollbar ── */
+  /* Firefox */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) var(--color-root);
+  }
+  /* Webkit (Chrome, Edge, Safari) */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-root);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(232, 168, 56, 0.35);
+    border-radius: 4px;
+    border: 2px solid var(--color-root);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(232, 168, 56, 0.55);
+  }
+  ::-webkit-scrollbar-thumb:active {
+    background: var(--color-accent);
   }
 
   /* Selection */
