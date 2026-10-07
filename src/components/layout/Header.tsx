@@ -58,7 +58,7 @@ export default function Header() {
       initial={{ y: -72, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-      className="fixed top-0 left-0 right-0 z-50 w-full border-b"
+      className="sticky top-0 left-0 right-0 z-50 w-full border-b"
       style={{
         height: 'var(--header-h)',
         background: 'rgba(8, 8, 12, 0.75)',
